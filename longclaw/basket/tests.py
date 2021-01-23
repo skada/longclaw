@@ -6,7 +6,7 @@ try:
 except ImportError:
     from django.core.urlresolvers import reverse_lazy
 from django.core.management import call_command
-from django.utils.six import StringIO
+from io import StringIO
 
 from longclaw.tests.utils import LongclawTestCase, BasketItemFactory, ProductVariantFactory, catch_signal
 from longclaw.basket.utils import basket_id
@@ -20,6 +20,7 @@ from .signals import basket_modified
 class CommandTests(TestCase):
     """Test management commands
     """
+
     def test_remove_baskets(self):
         """Removing stale baskets.
         Expect that nothiing is removed and the command exits cleanly
@@ -32,6 +33,7 @@ class CommandTests(TestCase):
 class BasketTest(LongclawTestCase):
     """Round trip API tests
     """
+
     def setUp(self):
         """Create a basket with things in it
         """
@@ -45,7 +47,7 @@ class BasketTest(LongclawTestCase):
         self.get_test('longclaw_basket_list')
 
     def test_basket_total_items(self):
-        response = self.get_test('longclaw_basket_total_items')
+        self.get_test('longclaw_basket_total_items')
 
     def test_item_quantity(self):
         self.get_test('longclaw_basket_item_count', {'variant_id': self.item.variant.id})
@@ -76,7 +78,6 @@ class BasketTest(LongclawTestCase):
         response = self.client.post(reverse_lazy('longclaw_basket_list'))
         self.assertEqual(response.status_code, 400)
 
-
     def test_add_to_cart_btn(self):
         """Test the add to cart tag responds
         """
@@ -90,6 +91,7 @@ class BasketTest(LongclawTestCase):
 class BasketModifiedSignalTest(LongclawTestCase):
     """Round trip API tests
     """
+
     def setUp(self):
         """Create a basket with things in it
         """
@@ -106,9 +108,9 @@ class BasketModifiedSignalTest(LongclawTestCase):
         with catch_signal(basket_modified) as handler:
             variant = ProductVariantFactory()
             self.post_test({'variant_id': variant.id}, 'longclaw_basket_list')
-        
+
         handler.assert_called_once_with(
-            basket_id=mock.ANY, # TODO: CHECK CORRECT BASKET ID IS SENT
+            basket_id=mock.ANY,  # TODO: CHECK CORRECT BASKET ID IS SENT
             sender=BasketItem,
             signal=basket_modified,
         )
@@ -119,9 +121,9 @@ class BasketModifiedSignalTest(LongclawTestCase):
         """
         with catch_signal(basket_modified) as handler:
             self.post_test({'variant_id': self.item.variant.id}, 'longclaw_basket_list')
-        
+
         handler.assert_called_once_with(
-            basket_id=mock.ANY, # TODO: CHECK CORRECT BASKET ID IS SENT
+            basket_id=mock.ANY,  # TODO: CHECK CORRECT BASKET ID IS SENT
             sender=BasketItem,
             signal=basket_modified,
         )
@@ -132,9 +134,9 @@ class BasketModifiedSignalTest(LongclawTestCase):
         """
         with catch_signal(basket_modified) as handler:
             self.del_test('longclaw_basket_detail', {'variant_id': self.item.variant.id})
-        
+
         handler.assert_called_once_with(
-            basket_id=mock.ANY, # TODO: CHECK CORRECT BASKET ID IS SENT
+            basket_id=mock.ANY,  # TODO: CHECK CORRECT BASKET ID IS SENT
             sender=BasketItem,
             signal=basket_modified,
         )

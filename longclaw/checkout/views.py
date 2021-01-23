@@ -3,6 +3,8 @@ from django.views.generic import TemplateView
 from django.views.decorators.http import require_GET
 from django.http import HttpResponseRedirect
 
+from wagtail.core.models import Site
+
 try:
     from django.urls import reverse
 except ImportError:
@@ -31,7 +33,7 @@ class CheckoutView(TemplateView):
         context = super(CheckoutView, self).get_context_data(**kwargs)
         items, _ = get_basket_items(self.request)
         total_price = sum(item.total() for item in items)
-        site = getattr(self.request, 'site', None)
+        site = Site.find_for_request(self.request)
         context['checkout_form'] = self.checkout_form(
             self.request.POST or None)
         context['shipping_form'] = self.shipping_address_form(

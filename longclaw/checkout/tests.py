@@ -112,7 +112,7 @@ class CheckoutApiShippingTest(LongclawTestCase):
             shipping_option=rate.name,
         )
         self.assertEqual(order.shipping_rate, amount)
-    
+
     def test_create_order_with_address_shipping_option(self):
         amount = 12
         rate = ShippingRate.objects.create(
@@ -130,7 +130,7 @@ class CheckoutApiShippingTest(LongclawTestCase):
             shipping_option=rate.name,
         )
         self.assertEqual(order.shipping_rate, amount)
-    
+
     def test_create_order_with_address_and_basket_shipping_option(self):
         amount = 13
         rate = ShippingRate.objects.create(
@@ -201,7 +201,7 @@ class CheckoutTest(TestCase):
         bid = basket_id(request)
         BasketItemFactory(basket_id=bid)
         response = CheckoutView.as_view()(request)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
     def test_post_checkout_billing(self):
         """
@@ -230,7 +230,7 @@ class CheckoutTest(TestCase):
         bid = basket_id(request)
         BasketItemFactory(basket_id=bid)
         response = CheckoutView.as_view()(request)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
     def test_post_checkout_invalid(self):
         """
@@ -255,7 +255,6 @@ class CheckoutTest(TestCase):
         order = OrderFactory(shipping_address=address, billing_address=address)
         response = self.client.get(reverse_lazy('longclaw_checkout_success', kwargs={'pk': order.id}))
         self.assertEqual(response.status_code, 200)
-
 
 
 class GatewayTests(TestCase):

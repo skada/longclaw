@@ -1,5 +1,8 @@
 import math
 import stripe
+
+from wagtail.core.models import Site
+
 from longclaw.settings import STRIPE_SECRET
 from longclaw.configuration.models import Configuration
 from longclaw.checkout.errors import PaymentError
@@ -10,12 +13,13 @@ class StripePayment(BasePayment):
     """
     Create a payment using stripe
     """
+
     def __init__(self):
         stripe.api_key = STRIPE_SECRET
 
     def create_payment(self, request, amount, description=''):
         try:
-            currency = Configuration.for_site(request.site).currency
+            currency = Configuration.for_site(Site.find_for_request(request)).currency
             charge = stripe.Charge.create(
                 amount=int(math.ceil(amount * 100)),  # Amount in pence
                 currency=currency.lower(),

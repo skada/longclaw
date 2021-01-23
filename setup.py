@@ -8,10 +8,12 @@ import subprocess
 from setuptools import setup
 from setuptools.command.sdist import sdist as base_sdist
 
+
 class sdist(base_sdist):
     """
     Regular sdist class plus compilation of front end assets
     """
+
     def compile_assets(self):
         """
         Compile the front end assets
@@ -87,13 +89,13 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'django==2.2.5',
-        'wagtail==2.6.2',
-        'django-countries==5.5',
-        'django-extensions==2.2.1',
-        'djangorestframework==3.10.3',
-        'django-ipware==2.1.0',
-        'django-polymorphic==2.0.3',
+        'django==3.1.5',
+        'wagtail==2.11.3',
+        'django-countries==7.0',
+        'django-extensions==3.1.0',
+        'djangorestframework==3.12.2',
+        'django-ipware==3.0.2',
+        'django-polymorphic==3.0.0',
     ],
     license="MIT",
     zip_safe=False,

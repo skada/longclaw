@@ -1,7 +1,9 @@
 from decimal import Decimal
 from django.utils.module_loading import import_string
 from django.utils import timezone
-from ipware.ip import get_real_ip
+from ipware.ip import get_client_ip
+
+from wagtail.core.models import Site
 
 from longclaw.basket.utils import get_basket_items, destroy_basket
 from longclaw.shipping.utils import get_shipping_cost
@@ -62,9 +64,9 @@ def create_order(email,
     else:
         shipping_country = shipping_address.country
 
-    ip_address = get_real_ip(request)
+    ip_address = get_client_ip(request)
     if shipping_country and shipping_option:
-        site_settings = Configuration.for_site(request.site)
+        site_settings = Configuration.for_site(Site.find_for_request(request))
         shipping_rate = get_shipping_cost(
             site_settings,
             shipping_address.country.pk,
